@@ -1,0 +1,757 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template format_letstudy/local/content
+
+    LetStudy course format main content template.
+
+    In editing mode, renders a standard section list compatible with
+    Moodle's reactive course editor (drag-and-drop, inline editing).
+    In view mode, renders fancy layouts (Cards, Accordion, Tabs, List, Timeline).
+
+    @package    format_letstudy
+    @copyright  2026 LetStudy Group
+    @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+}}
+
+<div class="format-letstudy format-letstudy--{{sectionlayout}} {{#enableanimations}}format-letstudy--animated format-letstudy--anim-{{animationstyle}}{{/enableanimations}}"
+     style="--ls-brand: {{brandcolor}}; --ls-accent: {{secondarycolor}}; --ls-columns: {{cardcolumns}};"
+     data-layout="{{sectionlayout}}">
+
+    {{! ================================================================
+        EDITING MODE - Unified standard section list for all layouts.
+        Uses Moodle's native structure for full drag-and-drop support.
+        ================================================================ }}
+    {{! ================================================================
+        MAIN COURSE PAGE - Only show layouts when NOT on a section page.
+        ================================================================ }}
+    {{^hasnavigation}}
+
+    {{#isediting}}
+    <ul class="format-letstudy__sections format-letstudy__sections--{{sectionlayout}}" data-for="course_sectionlist">
+        {{#initialsection}}
+        {{$ core_courseformat/local/content/section }}
+            {{> core_courseformat/local/content/section }}
+        {{/ core_courseformat/local/content/section }}
+        {{/initialsection}}
+        {{#sections}}
+        {{$ core_courseformat/local/content/section }}
+            {{> core_courseformat/local/content/section }}
+        {{/ core_courseformat/local/content/section }}
+        {{/sections}}
+    </ul>
+    {{/isediting}}
+
+    {{! ================================================================
+        VIEW MODE - Fancy custom layouts for students.
+        ================================================================ }}
+    {{^isediting}}
+
+    {{! Section 0 - General section always shown }}
+    {{#initialsection}}
+        <div class="format-letstudy__general" data-region="letstudy-general">
+            {{$ core_courseformat/local/content/section }}
+                {{> core_courseformat/local/content/section }}
+            {{/ core_courseformat/local/content/section }}
+        </div>
+    {{/initialsection}}
+
+    {{! ========== CARDS LAYOUT ========== }}
+    {{#islayoutcards}}
+    <div class="format-letstudy__cards" data-region="letstudy-cards">
+        {{#sections}}
+        <a href="{{sectionurl}}" class="format-letstudy__card {{#enableanimations}}format-letstudy__card--animate{{/enableanimations}}"
+           data-sectionnum="{{num}}"
+           {{#hassectioncolor}}style="--ls-section-color: {{sectioncolor}};"{{/hassectioncolor}}>
+            <div class="format-letstudy__card-inner">
+                <div class="format-letstudy__card-front"
+                     style="{{#hassectionimage}}background-image: url('{{sectionimage}}');{{/hassectionimage}}">
+                    <div class="format-letstudy__card-overlay"></div>
+                    <div class="format-letstudy__card-content">
+                        {{#showsectionicon}}
+                        <div class="format-letstudy__card-icon">
+                            <i class="fa {{sectionicon}}" aria-hidden="true"></i>
+                        </div>
+                        {{/showsectionicon}}
+                        <h3 class="format-letstudy__card-title">{{{sectiontitle}}}</h3>
+                        <span class="format-letstudy__card-count">{{#str}}activities, format_letstudy, {{activitycount}}{{/str}}</span>
+                        {{#showprogress}}{{#progress_has_items}}
+                        {{#iscircular}}
+                        <div class="format-letstudy__progress-circular format-letstudy__progress-circular--sm format-letstudy__progress-circular--light">
+                            <svg class="format-letstudy__progress-svg" viewBox="0 0 80 80">
+                                <circle class="format-letstudy__progress-bg" cx="40" cy="40" r="36"></circle>
+                                <circle class="format-letstudy__progress-fill" cx="40" cy="40" r="36"
+                                        stroke-dasharray="{{progress_circumference}}"
+                                        stroke-dashoffset="{{progress_dashoffset}}"></circle>
+                            </svg>
+                            <span class="format-letstudy__progress-text">{{progress_percentage}}%</span>
+                        </div>
+                        {{/iscircular}}
+                        {{#islinear}}
+                        <div class="format-letstudy__card-progress">
+                            <div class="format-letstudy__progress-bar">
+                                <div class="format-letstudy__progress-bar-fill" style="width: {{progress_percentage}}%;"></div>
+                            </div>
+                            <span class="format-letstudy__progress-label">{{progress_percentage}}%</span>
+                        </div>
+                        {{/islinear}}
+                        {{/progress_has_items}}{{/showprogress}}
+                    </div>
+                </div>
+                <div class="format-letstudy__card-back">
+                    <div class="format-letstudy__card-back-content">
+                        {{#showsectionicon}}
+                        <div class="format-letstudy__card-back-icon">
+                            <i class="fa {{sectionicon}}" aria-hidden="true"></i>
+                        </div>
+                        {{/showsectionicon}}
+                        <h3 class="format-letstudy__card-back-title">{{{sectiontitle}}}</h3>
+                        <span class="format-letstudy__card-back-cta">
+                            {{#str}}clicktoopen, format_letstudy{{/str}} <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                        </span>
+                        {{#showprogress}}{{#progress_has_items}}
+                        <span class="format-letstudy__card-back-progress">{{progress_percentage}}% {{#str}}completed, core_completion{{/str}}</span>
+                        {{/progress_has_items}}{{/showprogress}}
+                    </div>
+                </div>
+            </div>
+        </a>
+        {{/sections}}
+    </div>
+    {{/islayoutcards}}
+
+    {{! ========== TABS LAYOUT ========== }}
+    {{#islayouttabs}}
+    <div class="format-letstudy__tabs" data-region="letstudy-tabs">
+        <div class="format-letstudy__tabs-nav" role="tablist">
+            {{#sections}}
+            <button class="format-letstudy__tab {{#isfirstsection}}format-letstudy__tab--active{{/isfirstsection}}"
+                    role="tab"
+                    id="ls-tab-{{num}}"
+                    aria-selected="{{#isfirstsection}}true{{/isfirstsection}}{{^isfirstsection}}false{{/isfirstsection}}"
+                    aria-controls="ls-tabpanel-{{num}}"
+                    tabindex="{{#isfirstsection}}0{{/isfirstsection}}{{^isfirstsection}}-1{{/isfirstsection}}"
+                    data-toggle="ls-tab"
+                    data-target="{{num}}"
+                    {{#hassectioncolor}}style="--ls-section-color: {{sectioncolor}};"{{/hassectioncolor}}>
+                {{#showsectionicon}}
+                <i class="fa {{sectionicon}} format-letstudy__tab-icon" aria-hidden="true"></i>
+                {{/showsectionicon}}
+                <span class="format-letstudy__tab-label">{{{sectiontitle}}}</span>
+                {{#showprogress}}{{#progress_has_items}}
+                <span class="format-letstudy__tab-badge" title="{{progress_text}}">{{progress_percentage}}%</span>
+                {{/progress_has_items}}{{/showprogress}}
+            </button>
+            {{/sections}}
+        </div>
+        <div class="format-letstudy__tabs-content">
+            {{#sections}}
+            <div class="format-letstudy__tab-panel {{#isfirstsection}}format-letstudy__tab-panel--active{{/isfirstsection}} {{#enableanimations}}format-letstudy__tab-panel--animate{{/enableanimations}}"
+                 role="tabpanel"
+                 id="ls-tabpanel-{{num}}"
+                 aria-labelledby="ls-tab-{{num}}"
+                 data-sectionnum="{{num}}">
+                {{$ core_courseformat/local/content/section }}
+                    {{> core_courseformat/local/content/section }}
+                {{/ core_courseformat/local/content/section }}
+            </div>
+            {{/sections}}
+        </div>
+    </div>
+    {{/islayouttabs}}
+
+    {{! ========== LIST LAYOUT ========== }}
+    {{#islayoutlist}}
+    <div class="format-letstudy__list" data-region="letstudy-list">
+        {{#sections}}
+        <div class="format-letstudy__list-item {{#enableanimations}}format-letstudy__list-item--animate{{/enableanimations}}"
+             data-sectionnum="{{num}}"
+             {{#hassectioncolor}}style="--ls-section-color: {{sectioncolor}};"{{/hassectioncolor}}>
+            <div class="format-letstudy__list-left">
+                {{#showsectionicon}}
+                <div class="format-letstudy__list-icon">
+                    <i class="fa {{sectionicon}}" aria-hidden="true"></i>
+                </div>
+                {{/showsectionicon}}
+                <div class="format-letstudy__list-info">
+                    <h3 class="format-letstudy__list-title">{{{sectiontitle}}}</h3>
+                    <span class="format-letstudy__list-count">{{#str}}activities, format_letstudy, {{activitycount}}{{/str}}</span>
+                </div>
+            </div>
+            <div class="format-letstudy__list-right">
+                {{#showprogress}}{{#progress_has_items}}
+                {{#iscircular}}
+                <div class="format-letstudy__progress-circular format-letstudy__progress-circular--sm">
+                    <svg class="format-letstudy__progress-svg" viewBox="0 0 80 80">
+                        <circle class="format-letstudy__progress-bg" cx="40" cy="40" r="36"></circle>
+                        <circle class="format-letstudy__progress-fill" cx="40" cy="40" r="36"
+                                stroke-dasharray="{{progress_circumference}}"
+                                stroke-dashoffset="{{progress_dashoffset}}"></circle>
+                    </svg>
+                    <span class="format-letstudy__progress-text">{{progress_percentage}}%</span>
+                </div>
+                {{/iscircular}}
+                {{#islinear}}
+                <div class="format-letstudy__progress-linear format-letstudy__progress-linear--list">
+                    <div class="format-letstudy__progress-bar">
+                        <div class="format-letstudy__progress-bar-fill" style="width: {{progress_percentage}}%;"></div>
+                    </div>
+                    <span class="format-letstudy__progress-label">{{progress_percentage}}%</span>
+                </div>
+                {{/islinear}}
+                {{/progress_has_items}}{{/showprogress}}
+                <a href="{{sectionurl}}" class="format-letstudy__list-link">
+                    <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                </a>
+            </div>
+        </div>
+        {{/sections}}
+    </div>
+    {{/islayoutlist}}
+
+    {{! ========== TIMELINE LAYOUT ========== }}
+    {{#islayouttimeline}}
+    <div class="format-letstudy__timeline" data-region="letstudy-timeline">
+        {{#sections}}
+        <div class="format-letstudy__timeline-item {{#enableanimations}}format-letstudy__timeline-item--animate{{/enableanimations}}"
+             data-sectionnum="{{num}}"
+             {{#hassectioncolor}}style="--ls-section-color: {{sectioncolor}};"{{/hassectioncolor}}>
+            <div class="format-letstudy__timeline-marker">
+                <div class="format-letstudy__timeline-dot">
+                    {{#showsectionicon}}
+                    <i class="fa {{sectionicon}}" aria-hidden="true"></i>
+                    {{/showsectionicon}}
+                </div>
+            </div>
+            <div class="format-letstudy__timeline-content">
+                <div class="format-letstudy__timeline-header">
+                    <h3 class="format-letstudy__timeline-title">{{{sectiontitle}}}</h3>
+                    {{#showprogress}}{{#progress_has_items}}
+                    {{#iscircular}}
+                    <div class="format-letstudy__progress-circular format-letstudy__progress-circular--sm">
+                        <svg class="format-letstudy__progress-svg" viewBox="0 0 80 80">
+                            <circle class="format-letstudy__progress-bg" cx="40" cy="40" r="36"></circle>
+                            <circle class="format-letstudy__progress-fill" cx="40" cy="40" r="36"
+                                    stroke-dasharray="{{progress_circumference}}"
+                                    stroke-dashoffset="{{progress_dashoffset}}"></circle>
+                        </svg>
+                        <span class="format-letstudy__progress-text">{{progress_percentage}}%</span>
+                    </div>
+                    {{/iscircular}}
+                    {{#islinear}}
+                    <div class="format-letstudy__progress-linear format-letstudy__progress-linear--inline">
+                        <div class="format-letstudy__progress-bar">
+                            <div class="format-letstudy__progress-bar-fill" style="width: {{progress_percentage}}%;"></div>
+                        </div>
+                        <span class="format-letstudy__progress-label">{{progress_percentage}}%</span>
+                    </div>
+                    {{/islinear}}
+                    {{/progress_has_items}}{{/showprogress}}
+                </div>
+                {{$ core_courseformat/local/content/section }}
+                    {{> core_courseformat/local/content/section }}
+                {{/ core_courseformat/local/content/section }}
+            </div>
+        </div>
+        {{/sections}}
+    </div>
+    {{/islayouttimeline}}
+
+    {{! ========== LEARNING PATH LAYOUT ========== }}
+    {{#islayoutpath}}
+    <div class="format-letstudy__path" data-region="letstudy-path">
+        {{#sections}}
+        <a href="{{sectionurl}}" class="format-letstudy__path-step {{#progress_complete}}format-letstudy__path-step--complete{{/progress_complete}} {{#progress_inprogress}}format-letstudy__path-step--inprogress{{/progress_inprogress}} {{#enableanimations}}format-letstudy__path-step--animate{{/enableanimations}}"
+           data-sectionnum="{{num}}"
+           {{#hassectioncolor}}style="--ls-section-color: {{sectioncolor}};"{{/hassectioncolor}}>
+            <div class="format-letstudy__path-connector"></div>
+            <div class="format-letstudy__path-node">
+                {{#progress_complete}}
+                <i class="fa fa-check" aria-hidden="true"></i>
+                {{/progress_complete}}
+                {{^progress_complete}}
+                    {{#showsectionicon}}
+                    <i class="fa {{sectionicon}}" aria-hidden="true"></i>
+                    {{/showsectionicon}}
+                    {{^showsectionicon}}
+                    <span class="format-letstudy__path-num">{{num}}</span>
+                    {{/showsectionicon}}
+                {{/progress_complete}}
+            </div>
+            <div class="format-letstudy__path-card">
+                <h3 class="format-letstudy__path-title">{{{sectiontitle}}}</h3>
+                <span class="format-letstudy__path-count">{{#str}}activities, format_letstudy, {{activitycount}}{{/str}}</span>
+                {{#showprogress}}{{#progress_has_items}}
+                {{#iscircular}}
+                <div class="format-letstudy__progress-circular format-letstudy__progress-circular--sm">
+                    <svg class="format-letstudy__progress-svg" viewBox="0 0 80 80">
+                        <circle class="format-letstudy__progress-bg" cx="40" cy="40" r="36"></circle>
+                        <circle class="format-letstudy__progress-fill" cx="40" cy="40" r="36"
+                                stroke-dasharray="{{progress_circumference}}"
+                                stroke-dashoffset="{{progress_dashoffset}}"></circle>
+                    </svg>
+                    <span class="format-letstudy__progress-text">{{progress_percentage}}%</span>
+                </div>
+                {{/iscircular}}
+                {{#islinear}}
+                <div class="format-letstudy__path-progress">
+                    <div class="format-letstudy__progress-bar">
+                        <div class="format-letstudy__progress-bar-fill" style="width: {{progress_percentage}}%;"></div>
+                    </div>
+                    <span class="format-letstudy__progress-label">{{progress_percentage}}%</span>
+                </div>
+                {{/islinear}}
+                {{/progress_has_items}}{{/showprogress}}
+            </div>
+        </a>
+        {{/sections}}
+    </div>
+    {{/islayoutpath}}
+
+    {{! ========== KANBAN BOARD LAYOUT ========== }}
+    {{#islayoutkanban}}
+    <div class="format-letstudy__kanban" data-region="letstudy-kanban">
+        {{! PENDING COLUMN }}
+        <div class="format-letstudy__kanban-column format-letstudy__kanban-column--pending">
+            <div class="format-letstudy__kanban-header">
+                <span class="format-letstudy__kanban-indicator format-letstudy__kanban-indicator--pending"></span>
+                <h3 class="format-letstudy__kanban-heading">{{#str}}kanban_pending, format_letstudy{{/str}}</h3>
+                <span class="format-letstudy__kanban-count">{{kanban_pending_count}}</span>
+            </div>
+            <div class="format-letstudy__kanban-items">
+                {{#kanban_pending}}
+                <a href="{{sectionurl}}" class="format-letstudy__kanban-card {{#enableanimations}}format-letstudy__kanban-card--animate{{/enableanimations}}"
+                   data-sectionnum="{{num}}"
+                   {{#hassectioncolor}}style="--ls-section-color: {{sectioncolor}};"{{/hassectioncolor}}>
+                    {{#showsectionicon}}
+                    <div class="format-letstudy__kanban-icon">
+                        <i class="fa {{sectionicon}}" aria-hidden="true"></i>
+                    </div>
+                    {{/showsectionicon}}
+                    <div class="format-letstudy__kanban-info">
+                        <h4 class="format-letstudy__kanban-title">{{{sectiontitle}}}</h4>
+                        <span class="format-letstudy__kanban-meta">{{#str}}activities, format_letstudy, {{activitycount}}{{/str}}</span>
+                    </div>
+                    {{#showprogress}}{{#progress_has_items}}
+                    <span class="format-letstudy__kanban-badge format-letstudy__kanban-badge--pending">{{progress_percentage}}%</span>
+                    {{/progress_has_items}}{{/showprogress}}
+                </a>
+                {{/kanban_pending}}
+                {{^has_kanban_pending}}
+                <div class="format-letstudy__kanban-empty">
+                    <i class="fa fa-inbox" aria-hidden="true"></i>
+                    <span>{{#str}}kanban_empty, format_letstudy{{/str}}</span>
+                </div>
+                {{/has_kanban_pending}}
+            </div>
+        </div>
+
+        {{! IN PROGRESS COLUMN }}
+        <div class="format-letstudy__kanban-column format-letstudy__kanban-column--inprogress">
+            <div class="format-letstudy__kanban-header">
+                <span class="format-letstudy__kanban-indicator format-letstudy__kanban-indicator--inprogress"></span>
+                <h3 class="format-letstudy__kanban-heading">{{#str}}kanban_inprogress, format_letstudy{{/str}}</h3>
+                <span class="format-letstudy__kanban-count">{{kanban_inprogress_count}}</span>
+            </div>
+            <div class="format-letstudy__kanban-items">
+                {{#kanban_inprogress}}
+                <a href="{{sectionurl}}" class="format-letstudy__kanban-card {{#enableanimations}}format-letstudy__kanban-card--animate{{/enableanimations}}"
+                   data-sectionnum="{{num}}"
+                   {{#hassectioncolor}}style="--ls-section-color: {{sectioncolor}};"{{/hassectioncolor}}>
+                    {{#showsectionicon}}
+                    <div class="format-letstudy__kanban-icon">
+                        <i class="fa {{sectionicon}}" aria-hidden="true"></i>
+                    </div>
+                    {{/showsectionicon}}
+                    <div class="format-letstudy__kanban-info">
+                        <h4 class="format-letstudy__kanban-title">{{{sectiontitle}}}</h4>
+                        <span class="format-letstudy__kanban-meta">{{#str}}activities, format_letstudy, {{activitycount}}{{/str}}</span>
+                    </div>
+                    {{#showprogress}}{{#progress_has_items}}
+                    <div class="format-letstudy__kanban-progress">
+                        <div class="format-letstudy__progress-bar">
+                            <div class="format-letstudy__progress-bar-fill" style="width: {{progress_percentage}}%;"></div>
+                        </div>
+                        <span class="format-letstudy__kanban-badge format-letstudy__kanban-badge--inprogress">{{progress_percentage}}%</span>
+                    </div>
+                    {{/progress_has_items}}{{/showprogress}}
+                </a>
+                {{/kanban_inprogress}}
+                {{^has_kanban_inprogress}}
+                <div class="format-letstudy__kanban-empty">
+                    <i class="fa fa-spinner" aria-hidden="true"></i>
+                    <span>{{#str}}kanban_empty, format_letstudy{{/str}}</span>
+                </div>
+                {{/has_kanban_inprogress}}
+            </div>
+        </div>
+
+        {{! COMPLETED COLUMN }}
+        <div class="format-letstudy__kanban-column format-letstudy__kanban-column--complete">
+            <div class="format-letstudy__kanban-header">
+                <span class="format-letstudy__kanban-indicator format-letstudy__kanban-indicator--complete"></span>
+                <h3 class="format-letstudy__kanban-heading">{{#str}}kanban_complete, format_letstudy{{/str}}</h3>
+                <span class="format-letstudy__kanban-count">{{kanban_complete_count}}</span>
+            </div>
+            <div class="format-letstudy__kanban-items">
+                {{#kanban_complete}}
+                <a href="{{sectionurl}}" class="format-letstudy__kanban-card format-letstudy__kanban-card--done {{#enableanimations}}format-letstudy__kanban-card--animate{{/enableanimations}}"
+                   data-sectionnum="{{num}}"
+                   {{#hassectioncolor}}style="--ls-section-color: {{sectioncolor}};"{{/hassectioncolor}}>
+                    {{#showsectionicon}}
+                    <div class="format-letstudy__kanban-icon format-letstudy__kanban-icon--done">
+                        <i class="fa {{sectionicon}}" aria-hidden="true"></i>
+                    </div>
+                    {{/showsectionicon}}
+                    <div class="format-letstudy__kanban-info">
+                        <h4 class="format-letstudy__kanban-title">{{{sectiontitle}}}</h4>
+                        <span class="format-letstudy__kanban-meta">{{#str}}activities, format_letstudy, {{activitycount}}{{/str}}</span>
+                    </div>
+                    <span class="format-letstudy__kanban-badge format-letstudy__kanban-badge--complete">
+                        <i class="fa fa-check" aria-hidden="true"></i> 100%
+                    </span>
+                </a>
+                {{/kanban_complete}}
+                {{^has_kanban_complete}}
+                <div class="format-letstudy__kanban-empty">
+                    <i class="fa fa-trophy" aria-hidden="true"></i>
+                    <span>{{#str}}kanban_empty, format_letstudy{{/str}}</span>
+                </div>
+                {{/has_kanban_complete}}
+            </div>
+        </div>
+    </div>
+    {{/islayoutkanban}}
+
+    {{! ========== METRO TILES LAYOUT ========== }}
+    {{#islayoutmetro}}
+    <div class="format-letstudy__metro" data-region="letstudy-metro">
+        {{#sections}}
+        <a href="{{sectionurl}}" class="format-letstudy__metro-tile {{#enableanimations}}format-letstudy__metro-tile--animate{{/enableanimations}}"
+           data-sectionnum="{{num}}"
+           {{#hassectioncolor}}style="--ls-section-color: {{sectioncolor}};"{{/hassectioncolor}}>
+            {{#hassectionimage}}
+            <img src="{{sectionimage}}" alt="" class="format-letstudy__metro-img" />
+            {{/hassectionimage}}
+            <div class="format-letstudy__metro-gradient"></div>
+            <div class="format-letstudy__metro-content">
+                {{#showsectionicon}}
+                <i class="fa {{sectionicon}} format-letstudy__metro-icon" aria-hidden="true"></i>
+                {{/showsectionicon}}
+                <h3 class="format-letstudy__metro-title">{{{sectiontitle}}}</h3>
+                {{#showprogress}}{{#progress_has_items}}
+                {{#iscircular}}
+                <div class="format-letstudy__progress-circular format-letstudy__progress-circular--sm format-letstudy__progress-circular--light format-letstudy__metro-circular">
+                    <svg class="format-letstudy__progress-svg" viewBox="0 0 80 80">
+                        <circle class="format-letstudy__progress-bg" cx="40" cy="40" r="36"></circle>
+                        <circle class="format-letstudy__progress-fill" cx="40" cy="40" r="36"
+                                stroke-dasharray="{{progress_circumference}}"
+                                stroke-dashoffset="{{progress_dashoffset}}"></circle>
+                    </svg>
+                    <span class="format-letstudy__progress-text">{{progress_percentage}}%</span>
+                </div>
+                {{/iscircular}}
+                {{#islinear}}
+                <div class="format-letstudy__metro-progress">
+                    <div class="format-letstudy__progress-bar">
+                        <div class="format-letstudy__progress-bar-fill" style="width: {{progress_percentage}}%;"></div>
+                    </div>
+                    <span class="format-letstudy__progress-label">{{progress_percentage}}%</span>
+                </div>
+                {{/islinear}}
+                {{/progress_has_items}}{{/showprogress}}
+            </div>
+            <div class="format-letstudy__metro-hover">
+                <span class="format-letstudy__metro-count">{{#str}}activities, format_letstudy, {{activitycount}}{{/str}}</span>
+                {{#showprogress}}{{#progress_has_items}}
+                <span class="format-letstudy__metro-hover-pct">{{progress_percentage}}%</span>
+                {{/progress_has_items}}{{/showprogress}}
+                <span class="format-letstudy__metro-cta">
+                    {{#str}}clicktoopen, format_letstudy{{/str}} <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                </span>
+            </div>
+        </a>
+        {{/sections}}
+    </div>
+    {{/islayoutmetro}}
+
+    {{! ========== MAP JOURNEY LAYOUT ========== }}
+    {{#islayoutmap}}
+    <div class="format-letstudy__map" data-region="letstudy-map">
+        <div class="format-letstudy__map-start">
+            <i class="fa fa-flag-checkered" aria-hidden="true"></i>
+        </div>
+        <div class="format-letstudy__map-road"></div>
+        {{#sections}}
+        <div class="format-letstudy__map-stop {{#progress_complete}}format-letstudy__map-stop--complete{{/progress_complete}} {{#progress_inprogress}}format-letstudy__map-stop--current{{/progress_inprogress}} {{#enableanimations}}format-letstudy__map-stop--animate{{/enableanimations}}"
+             data-sectionnum="{{num}}"
+             {{#hassectioncolor}}style="--ls-section-color: {{sectioncolor}};"{{/hassectioncolor}}>
+            <div class="format-letstudy__map-marker">
+                {{#progress_complete}}
+                <i class="fa fa-check" aria-hidden="true"></i>
+                {{/progress_complete}}
+                {{^progress_complete}}
+                    {{#progress_inprogress}}
+                    <div class="format-letstudy__map-pulse"></div>
+                    {{/progress_inprogress}}
+                    <span class="format-letstudy__map-num">{{num}}</span>
+                {{/progress_complete}}
+            </div>
+            <a href="{{sectionurl}}" class="format-letstudy__map-card">
+                {{#hassectionimage}}
+                <div class="format-letstudy__map-card-img" style="background-image: url('{{sectionimage}}');"></div>
+                {{/hassectionimage}}
+                <div class="format-letstudy__map-card-body">
+                    {{#showsectionicon}}
+                    <div class="format-letstudy__map-icon">
+                        <i class="fa {{sectionicon}}" aria-hidden="true"></i>
+                    </div>
+                    {{/showsectionicon}}
+                    <div class="format-letstudy__map-info">
+                        <h3 class="format-letstudy__map-title">{{{sectiontitle}}}</h3>
+                        <span class="format-letstudy__map-count">{{#str}}activities, format_letstudy, {{activitycount}}{{/str}}</span>
+                    </div>
+                    {{#showprogress}}{{#progress_has_items}}
+                    {{#iscircular}}
+                    <div class="format-letstudy__progress-circular format-letstudy__progress-circular--sm">
+                        <svg class="format-letstudy__progress-svg" viewBox="0 0 80 80">
+                            <circle class="format-letstudy__progress-bg" cx="40" cy="40" r="36"></circle>
+                            <circle class="format-letstudy__progress-fill" cx="40" cy="40" r="36"
+                                    stroke-dasharray="{{progress_circumference}}"
+                                    stroke-dashoffset="{{progress_dashoffset}}"></circle>
+                        </svg>
+                        <span class="format-letstudy__progress-text">{{progress_percentage}}%</span>
+                    </div>
+                    {{/iscircular}}
+                    {{/progress_has_items}}{{/showprogress}}
+                </div>
+                {{#showprogress}}{{#progress_has_items}}
+                {{#islinear}}
+                <div class="format-letstudy__map-progress">
+                    <div class="format-letstudy__progress-bar">
+                        <div class="format-letstudy__progress-bar-fill" style="width: {{progress_percentage}}%;"></div>
+                    </div>
+                    <span class="format-letstudy__progress-label">{{progress_percentage}}%</span>
+                </div>
+                {{/islinear}}
+                {{/progress_has_items}}{{/showprogress}}
+            </a>
+        </div>
+        {{/sections}}
+        <div class="format-letstudy__map-finish">
+            <i class="fa fa-trophy" aria-hidden="true"></i>
+        </div>
+    </div>
+    {{/islayoutmap}}
+
+    {{! ========== 3D BOOKSHELF LAYOUT ========== }}
+    {{#islayoutbookshelf}}
+    <div class="format-letstudy__bookshelf" data-region="letstudy-bookshelf">
+        <div class="format-letstudy__bookcase">
+            {{#sections}}
+            <a href="{{sectionurl}}" class="format-letstudy__book {{#enableanimations}}format-letstudy__book--animate{{/enableanimations}}"
+               data-sectionnum="{{num}}"
+               {{#hassectioncolor}}style="--ls-section-color: {{sectioncolor}};"{{/hassectioncolor}}>
+                <div class="format-letstudy__book-spine">
+                    {{#showsectionicon}}
+                    <i class="fa {{sectionicon}} format-letstudy__book-icon" aria-hidden="true"></i>
+                    {{/showsectionicon}}
+                    <span class="format-letstudy__book-spine-title">{{{sectiontitle}}}</span>
+                </div>
+                <div class="format-letstudy__book-cover">
+                    {{#hassectionimage}}
+                    <img src="{{sectionimage}}" alt="" class="format-letstudy__book-img" />
+                    {{/hassectionimage}}
+                    <div class="format-letstudy__book-info">
+                        {{#showsectionicon}}
+                        <i class="fa {{sectionicon}} format-letstudy__book-cover-icon" aria-hidden="true"></i>
+                        {{/showsectionicon}}
+                        <h3 class="format-letstudy__book-title">{{{sectiontitle}}}</h3>
+                        <span class="format-letstudy__book-count">{{#str}}activities, format_letstudy, {{activitycount}}{{/str}}</span>
+                        {{#showprogress}}{{#progress_has_items}}
+                        {{#iscircular}}
+                        <div class="format-letstudy__progress-circular format-letstudy__progress-circular--sm">
+                            <svg class="format-letstudy__progress-svg" viewBox="0 0 80 80">
+                                <circle class="format-letstudy__progress-bg" cx="40" cy="40" r="36"></circle>
+                                <circle class="format-letstudy__progress-fill" cx="40" cy="40" r="36"
+                                        stroke-dasharray="{{progress_circumference}}"
+                                        stroke-dashoffset="{{progress_dashoffset}}"></circle>
+                            </svg>
+                            <span class="format-letstudy__progress-text">{{progress_percentage}}%</span>
+                        </div>
+                        {{/iscircular}}
+                        {{#islinear}}
+                        <div class="format-letstudy__book-progress">
+                            <div class="format-letstudy__progress-bar">
+                                <div class="format-letstudy__progress-bar-fill" style="width: {{progress_percentage}}%;"></div>
+                            </div>
+                            <span class="format-letstudy__progress-label">{{progress_percentage}}%</span>
+                        </div>
+                        {{/islinear}}
+                        {{/progress_has_items}}{{/showprogress}}
+                    </div>
+                </div>
+            </a>
+            {{/sections}}
+        </div>
+    </div>
+    {{/islayoutbookshelf}}
+
+    {{! ========== POLAROID WALL LAYOUT ========== }}
+    {{#islayoutpolaroid}}
+    <div class="format-letstudy__polaroid" data-region="letstudy-polaroid">
+        {{#sections}}
+        <a href="{{sectionurl}}" class="format-letstudy__pol-card {{#enableanimations}}format-letstudy__pol-card--animate{{/enableanimations}}"
+           data-sectionnum="{{num}}"
+           {{#hassectioncolor}}style="--ls-section-color: {{sectioncolor}};"{{/hassectioncolor}}>
+            <div class="format-letstudy__pol-pin"></div>
+            <div class="format-letstudy__pol-photo">
+                {{#hassectionimage}}
+                <img src="{{sectionimage}}" alt="" class="format-letstudy__pol-img" />
+                {{/hassectionimage}}
+                {{^hassectionimage}}
+                <div class="format-letstudy__pol-placeholder">
+                    {{#showsectionicon}}
+                    <i class="fa {{sectionicon}}" aria-hidden="true"></i>
+                    {{/showsectionicon}}
+                    {{^showsectionicon}}
+                    <i class="fa fa-camera" aria-hidden="true"></i>
+                    {{/showsectionicon}}
+                </div>
+                {{/hassectionimage}}
+            </div>
+            <div class="format-letstudy__pol-caption">
+                <h3 class="format-letstudy__pol-title">{{{sectiontitle}}}</h3>
+                <span class="format-letstudy__pol-count">{{#str}}activities, format_letstudy, {{activitycount}}{{/str}}</span>
+                {{#showprogress}}{{#progress_has_items}}
+                {{#iscircular}}
+                <div class="format-letstudy__progress-circular format-letstudy__progress-circular--sm">
+                    <svg class="format-letstudy__progress-svg" viewBox="0 0 80 80">
+                        <circle class="format-letstudy__progress-bg" cx="40" cy="40" r="36"></circle>
+                        <circle class="format-letstudy__progress-fill" cx="40" cy="40" r="36"
+                                stroke-dasharray="{{progress_circumference}}"
+                                stroke-dashoffset="{{progress_dashoffset}}"></circle>
+                    </svg>
+                    <span class="format-letstudy__progress-text">{{progress_percentage}}%</span>
+                </div>
+                {{/iscircular}}
+                {{#islinear}}
+                <div class="format-letstudy__pol-progress">
+                    <div class="format-letstudy__progress-bar">
+                        <div class="format-letstudy__progress-bar-fill" style="width: {{progress_percentage}}%;"></div>
+                    </div>
+                    <span class="format-letstudy__progress-label">{{progress_percentage}}%</span>
+                </div>
+                {{/islinear}}
+                {{/progress_has_items}}{{/showprogress}}
+            </div>
+        </a>
+        {{/sections}}
+    </div>
+    {{/islayoutpolaroid}}
+
+
+
+    {{/isediting}}
+
+    {{/hasnavigation}}
+
+    {{! ========== SINGLE SECTION PAGE (section.php) ========== }}
+    {{#hasnavigation}}
+    <div class="format-letstudy__single-section {{#islayoutkanban}}{{^isediting}}format-letstudy__single-section--kanban{{/isediting}}{{/islayoutkanban}}">
+        {{#sectionnavigation}}
+            {{$ core_courseformat/local/content/sectionnavigation }}
+                {{> core_courseformat/local/content/sectionnavigation }}
+            {{/ core_courseformat/local/content/sectionnavigation }}
+        {{/sectionnavigation}}
+
+        {{! Activity-level Kanban board (only in Kanban layout, view mode) }}
+        {{#islayoutkanban}}{{^isediting}}
+        <div class="format-letstudy__activity-kanban format-letstudy__kanban" data-region="letstudy-activity-kanban">
+            <div class="format-letstudy__kanban-column format-letstudy__kanban-column--pending">
+                <div class="format-letstudy__kanban-header">
+                    <span class="format-letstudy__kanban-indicator format-letstudy__kanban-indicator--pending"></span>
+                    <h3 class="format-letstudy__kanban-heading">{{#str}}kanban_pending, format_letstudy{{/str}}</h3>
+                    <span class="format-letstudy__kanban-count" data-kanban-count="pending">0</span>
+                </div>
+                <div class="format-letstudy__kanban-items" data-kanban-col="pending"></div>
+            </div>
+            <div class="format-letstudy__kanban-column format-letstudy__kanban-column--inprogress">
+                <div class="format-letstudy__kanban-header">
+                    <span class="format-letstudy__kanban-indicator format-letstudy__kanban-indicator--inprogress"></span>
+                    <h3 class="format-letstudy__kanban-heading">{{#str}}kanban_inprogress, format_letstudy{{/str}}</h3>
+                    <span class="format-letstudy__kanban-count" data-kanban-count="inprogress">0</span>
+                </div>
+                <div class="format-letstudy__kanban-items" data-kanban-col="inprogress"></div>
+            </div>
+            <div class="format-letstudy__kanban-column format-letstudy__kanban-column--complete">
+                <div class="format-letstudy__kanban-header">
+                    <span class="format-letstudy__kanban-indicator format-letstudy__kanban-indicator--complete"></span>
+                    <h3 class="format-letstudy__kanban-heading">{{#str}}kanban_complete, format_letstudy{{/str}}</h3>
+                    <span class="format-letstudy__kanban-count" data-kanban-count="complete">0</span>
+                </div>
+                <div class="format-letstudy__kanban-items" data-kanban-col="complete"></div>
+            </div>
+        </div>
+        {{/isediting}}{{/islayoutkanban}}
+
+        <ul class="format-letstudy__sections format-letstudy__sections--single" data-for="course_sectionlist">
+        {{#singlesection}}
+            {{$ core_courseformat/local/content/section }}
+                {{> core_courseformat/local/content/section }}
+            {{/ core_courseformat/local/content/section }}
+        {{/singlesection}}
+        </ul>
+        {{#sectionselector}}
+            {{$ core_courseformat/local/content/sectionselector }}
+                {{> core_courseformat/local/content/sectionselector }}
+            {{/ core_courseformat/local/content/sectionselector }}
+        {{/sectionselector}}
+    </div>
+    {{/hasnavigation}}
+
+    {{! Add section }}
+    {{#numsections}}
+        {{$ core_courseformat/local/content/addsection }}
+            {{> core_courseformat/local/content/addsection }}
+        {{/ core_courseformat/local/content/addsection }}
+    {{/numsections}}
+
+    {{! Bulk edit tools }}
+    {{#bulkedittools}}
+        {{$ core_courseformat/local/content/bulkedittools}}
+            {{> core_courseformat/local/content/bulkedittools}}
+        {{/ core_courseformat/local/content/bulkedittools}}
+    {{/bulkedittools}}
+</div>
+{{! Initialize Moodle reactive course editor in editing mode or single section pages.
+    NOT in view mode main page - our letstudy.js handles tabs/cards/list/timeline
+    and the reactive component's Bootstrap Collapse would conflict with our custom layouts. }}
+{{#isediting}}
+{{#js}}
+require(['core_courseformat/local/content'], function(component) {
+    component.init('#page', {}, {{sectionreturn}}, {{#pagesectionid}}{{.}}{{/pagesectionid}}{{^pagesectionid}}null{{/pagesectionid}});
+});
+{{/js}}
+{{/isediting}}
+{{#hasnavigation}}
+{{#js}}
+require(['core_courseformat/local/content'], function(component) {
+    component.init('#page', {}, {{sectionreturn}}, {{#pagesectionid}}{{.}}{{/pagesectionid}}{{^pagesectionid}}null{{/pagesectionid}});
+});
+{{/js}}
+{{/hasnavigation}}
