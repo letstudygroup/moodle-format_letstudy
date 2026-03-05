@@ -14,19 +14,17 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Icon picker modal for LetStudy course format.
+ * Icon picker modal for Letstudy course format.
  *
  * Provides a visual icon browser for selecting FontAwesome icons
  * in section settings, replacing manual class name input.
  *
  * @module     format_letstudy/iconpicker
- * @copyright  2026 LetStudy Group
+ * @copyright  2026 Letstudy Group
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-import {get_strings} from 'core/str';
-
-/* eslint-disable max-len */
+import {get_strings as getStrings} from 'core/str';
 
 const ICONS = [
     // Education & Learning
@@ -184,7 +182,7 @@ export const init = async() => {
     }
 
     // Fetch translatable strings from Moodle.
-    const fetchedStrings = await get_strings([
+    const fetchedStrings = await getStrings([
         {key: 'iconpicker_title', component: 'format_letstudy'},
         {key: 'iconpicker_search', component: 'format_letstudy'},
         {key: 'iconpicker_browse', component: 'format_letstudy'},

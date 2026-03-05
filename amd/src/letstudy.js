@@ -14,13 +14,13 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Main LetStudy course format module.
+ * Main Letstudy course format module.
  *
  * Handles tab switching and progress bar updates on activity completion.
  * Uses event delegation to work with Moodle's reactive course editor.
  *
  * @module     format_letstudy/letstudy
- * @copyright  2026 LetStudy Group
+ * @copyright  2026 Letstudy Group
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -455,7 +455,7 @@ const initActivityKanban = (container) => {
 };
 
 /**
- * Initialize the LetStudy course format.
+ * Initialize the Letstudy course format.
  *
  * @param {string} layout The section layout name passed from PHP.
  */

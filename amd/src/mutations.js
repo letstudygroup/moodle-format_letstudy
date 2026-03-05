@@ -14,14 +14,14 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * LetStudy format mutations.
+ * Letstudy format mutations.
  *
  * An instance of this class will be used to add custom mutations to the course editor.
  * To make sure the addMutations method find the proper functions, all functions must
  * be declared as class attributes, not simple methods.
  *
  * @module     format_letstudy/mutations
- * @copyright  2026 LetStudy Group
+ * @copyright  2026 Letstudy Group
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -30,9 +30,9 @@ import DefaultMutations from 'core_courseformat/local/courseeditor/mutations';
 import CourseActions from 'core_courseformat/local/content/actions';
 
 /**
- * LetStudy mutations class.
+ * Letstudy mutations class.
  */
-class LetStudyMutations extends DefaultMutations {
+class LetstudyMutations extends DefaultMutations {
 
     /**
      * Highlight sections.
@@ -78,11 +78,11 @@ class LetStudyMutations extends DefaultMutations {
 }
 
 /**
- * Initialize LetStudy mutations.
+ * Initialize Letstudy mutations.
  */
 export const init = () => {
     const courseEditor = getCurrentCourseEditor();
-    courseEditor.addMutations(new LetStudyMutations());
+    courseEditor.addMutations(new LetstudyMutations());
     CourseActions.addActions({
         sectionHighlight: 'sectionHighlight',
         sectionUnhighlight: 'sectionUnhighlight',

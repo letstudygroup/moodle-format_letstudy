@@ -15,10 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Main class for the LetStudy course format.
+ * Main class for the Letstudy course format.
  *
  * @package    format_letstudy
- * @copyright  2026 LetStudy Group
+ * @copyright  2026 Letstudy Group
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -28,18 +28,17 @@ require_once($CFG->dirroot . '/course/format/lib.php');
 use core\output\inplace_editable;
 
 /**
- * LetStudy course format class.
+ * Letstudy course format class.
  *
  * A highly configurable course format with 10 visual layouts (Cards, Tabs, List,
  * Timeline, Path, Kanban, Metro, Map, Bookshelf, Polaroid), section progress
  * tracking, animations, and customizable colors.
  *
  * @package    format_letstudy
- * @copyright  2026 LetStudy Group
+ * @copyright  2026 Letstudy Group
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class format_letstudy extends core_courseformat\base {
-
     /**
      * Returns true if this course format uses sections.
      *
@@ -76,8 +75,11 @@ class format_letstudy extends core_courseformat\base {
     public function get_section_name($section) {
         $section = $this->get_section($section);
         if ((string)$section->name !== '') {
-            return format_string($section->name, true,
-                ['context' => context_course::instance($this->courseid)]);
+            return format_string(
+                $section->name,
+                true,
+                ['context' => context_course::instance($this->courseid)]
+            );
         } else {
             return $this->get_default_section_name($section);
         }
@@ -160,8 +162,10 @@ class format_letstudy extends core_courseformat\base {
         global $PAGE;
         if ($navigation->includesectionnum === false) {
             $selectedsection = optional_param('section', null, PARAM_INT);
-            if ($selectedsection !== null && (!defined('AJAX_SCRIPT') || AJAX_SCRIPT == '0') &&
-                    $PAGE->url->compare(new moodle_url('/course/view.php'), URL_MATCH_BASE)) {
+            if (
+                $selectedsection !== null && (!defined('AJAX_SCRIPT') || AJAX_SCRIPT == '0') &&
+                    $PAGE->url->compare(new moodle_url('/course/view.php'), URL_MATCH_BASE)
+            ) {
                 $navigation->includesectionnum = $selectedsection;
             }
         }
@@ -492,13 +496,13 @@ class format_letstudy extends core_courseformat\base {
 
         // Add conditional visibility rules for course-level settings.
         if (!$forsection) {
-            // "Number of columns" only applies to Cards layout.
+            // Number of columns only applies to Cards layout.
             $mform->hideIf('cardcolumns', 'sectionlayout', 'neq', 'cards');
 
-            // "Animation style" only shows when animations are enabled.
+            // Animation style only shows when animations are enabled.
             $mform->hideIf('animationstyle', 'enableanimations', 'eq', 0);
 
-            // "Progress style" only shows when progress is enabled.
+            // Progress style only shows when progress is enabled.
             $mform->hideIf('progressstyle', 'showprogress', 'eq', 0);
 
             // Add HTML5 color picker next to color text fields.
@@ -511,7 +515,9 @@ class format_letstudy extends core_courseformat\base {
                         var picker = document.createElement('input');
                         picker.type = 'color';
                         picker.value = input.value || '#1E88E5';
-                        picker.style.cssText = 'width:44px;height:36px;padding:2px;border:1px solid #ced4da;border-radius:6px;cursor:pointer;margin-left:8px;vertical-align:middle';
+                        picker.style.cssText = 'width:44px;height:36px;padding:2px;' +
+                            'border:1px solid #ced4da;border-radius:6px;' +
+                            'cursor:pointer;margin-left:8px;vertical-align:middle';
                         picker.addEventListener('input', function() { input.value = this.value; });
                         input.addEventListener('input', function() { try { picker.value = this.value; } catch(e) {} });
                         input.parentNode.insertBefore(picker, input.nextSibling);
@@ -539,14 +545,20 @@ class format_letstudy extends core_courseformat\base {
 
             $draftitemid = file_get_submitted_draft_itemid('sectionimage_filemanager');
             file_prepare_draft_area(
-                $draftitemid, $context->id, 'format_letstudy', 'sectionimage',
-                $sectionid, $fileoptions
+                $draftitemid,
+                $context->id,
+                'format_letstudy',
+                'sectionimage',
+                $sectionid,
+                $fileoptions
             );
 
             $element = $mform->createElement(
-                'filemanager', 'sectionimage_filemanager',
+                'filemanager',
+                'sectionimage_filemanager',
                 get_string('sectionimage_upload', 'format_letstudy'),
-                null, $fileoptions
+                null,
+                $fileoptions
             );
 
             // Insert the filemanager before the URL text field if it exists.
@@ -717,13 +729,15 @@ function format_letstudy_inplace_editable($itemtype, $itemid, $newvalue) {
     if ($itemtype === 'sectionname' || $itemtype === 'sectionnamenl') {
         $section = $DB->get_record_sql(
             'SELECT s.* FROM {course_sections} s JOIN {course} c ON s.course = c.id WHERE s.id = ? AND c.format = ?',
-            [$itemid, 'letstudy'], MUST_EXIST);
+            [$itemid, 'letstudy'],
+            MUST_EXIST
+        );
         return course_get_format($section->course)->inplace_editable_update_section_name($section, $itemtype, $newvalue);
     }
 }
 
 /**
- * Serves files for the LetStudy course format plugin.
+ * Serves files for the Letstudy course format plugin.
  *
  * Handles section background images uploaded via the section edit form.
  *

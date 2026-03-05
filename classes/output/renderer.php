@@ -15,10 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Renderer for the LetStudy course format.
+ * Renderer for the Letstudy course format.
  *
  * @package    format_letstudy
- * @copyright  2026 LetStudy Group
+ * @copyright  2026 Letstudy Group
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -28,14 +28,13 @@ use core_courseformat\output\section_renderer;
 use moodle_page;
 
 /**
- * Basic renderer for LetStudy format.
+ * Basic renderer for Letstudy format.
  *
  * @package    format_letstudy
- * @copyright  2026 LetStudy Group
+ * @copyright  2026 Letstudy Group
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class renderer extends section_renderer {
-
     /**
      * Constructor method, calls the parent constructor.
      *

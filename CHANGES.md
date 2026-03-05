@@ -1,5 +1,18 @@
 # Changelog
 
+## v2.1.2 (2026-03-05)
+
+### Fixed
+- Section page editing: bulk actions, drag-and-drop, and action menus now work on section.php.
+- Double JS initialisation on section pages causing reactive editor conflicts.
+- "Add section" button hidden on single section pages (non-functional context).
+
+### Changed
+- Renamed "LetStudy" to "Letstudy" and "Course Formats" to "Course Format" across all files.
+- Fixed all PHP, CSS, and JS coding style issues reported by Moodle code prechecks.
+- Restored section.php URLs for course index navigation links.
+- Updated version and release metadata.
+
 ## v2.1.1 (2026-02-21)
 
 ### Fixed
@@ -25,7 +38,7 @@
 - Icon picker now uses Moodle `core/str` module for translatable strings.
 - Removed unused CSS (`.format-letstudy__branding`, `.format-letstudy__path-connector`).
 - Added `$plugin->supported` version range to version.php.
-- Updated plugin name to "LetStudy Course Formats".
+- Updated plugin name to "Letstudy Course Format".
 
 ### Added
 - Icon picker internationalisation strings (title, search, browse) in English and Greek.

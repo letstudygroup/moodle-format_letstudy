@@ -15,10 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Contains the content output class for the LetStudy course format.
+ * Contains the content output class for the Letstudy course format.
  *
  * @package    format_letstudy
- * @copyright  2026 LetStudy Group
+ * @copyright  2026 Letstudy Group
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -29,16 +29,15 @@ use renderer_base;
 use completion_info;
 
 /**
- * Class to render the course content for the LetStudy format.
+ * Class to render the course content for the Letstudy format.
  *
  * @package    format_letstudy
- * @copyright  2026 LetStudy Group
+ * @copyright  2026 Letstudy Group
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class content extends content_base {
-
     /**
-     * @var bool LetStudy format has add section after each section.
+     * @var bool Letstudy format has add section after each section.
      */
     protected $hasaddsection = true;
 
@@ -137,8 +136,10 @@ class content extends content_base {
                         if ($cm->completion != COMPLETION_TRACKING_NONE) {
                             $total++;
                             $completiondata = $completioninfo->get_data($cm, true, $USER->id);
-                            if ($completiondata->completionstate == COMPLETION_COMPLETE ||
-                                $completiondata->completionstate == COMPLETION_COMPLETE_PASS) {
+                            if (
+                                $completiondata->completionstate == COMPLETION_COMPLETE ||
+                                $completiondata->completionstate == COMPLETION_COMPLETE_PASS
+                            ) {
                                 $completed++;
                             }
                         }
@@ -193,14 +194,22 @@ class content extends content_base {
                 $fs = get_file_storage();
                 $sectioninfoobj = $modinfo->get_section_info($sectionnum);
                 $imgfiles = $fs->get_area_files(
-                    $coursecontext->id, 'format_letstudy', 'sectionimage',
-                    $sectioninfoobj->id, 'sortorder, id', false
+                    $coursecontext->id,
+                    'format_letstudy',
+                    'sectionimage',
+                    $sectioninfoobj->id,
+                    'sortorder, id',
+                    false
                 );
                 if ($imgfiles) {
                     $imgfile = reset($imgfiles);
                     $sectiondata->sectionimage = \moodle_url::make_pluginfile_url(
-                        $coursecontext->id, 'format_letstudy', 'sectionimage',
-                        $sectioninfoobj->id, $imgfile->get_filepath(), $imgfile->get_filename()
+                        $coursecontext->id,
+                        'format_letstudy',
+                        'sectionimage',
+                        $sectioninfoobj->id,
+                        $imgfile->get_filepath(),
+                        $imgfile->get_filename()
                     )->out(false);
                     $sectiondata->hassectionimage = true;
                 } else if (!empty($sectionoptions['sectionimage'])) {

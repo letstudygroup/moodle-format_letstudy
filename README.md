@@ -1,4 +1,4 @@
-# LetStudy Course Formats
+# Letstudy Course Format
 
 A modern, highly configurable course format plugin for Moodle that offers 10 unique visual
 layouts for presenting course sections. Designed to make courses more engaging and visually
@@ -65,7 +65,7 @@ appealing for students while giving teachers full creative control.
 
 ### Site-wide defaults
 
-Go to **Site administration > Plugins > Course formats > LetStudy Course Formats** to configure:
+Go to **Site administration > Plugins > Course formats > Letstudy Course Format** to configure:
 
 - Default layout for new courses.
 - Default brand and secondary colours.
@@ -102,4 +102,4 @@ This plugin is licensed under the [GNU GPL v3 or later](https://www.gnu.org/copy
 
 ## Credits
 
-Developed by [LetStudy Group](https://letstudy.gr).
+Developed by [Letstudy Group](https://plugins.letstudy.gr).

@@ -17,14 +17,14 @@
 {{!
     @template format_letstudy/local/content
 
-    LetStudy course format main content template.
+    Letstudy course format main content template.
 
     In editing mode, renders a standard section list compatible with
     Moodle's reactive course editor (drag-and-drop, inline editing).
     In view mode, renders fancy layouts (Cards, Accordion, Tabs, List, Timeline).
 
     @package    format_letstudy
-    @copyright  2026 LetStudy Group
+    @copyright  2026 Letstudy Group
     @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
 }}
 
@@ -724,12 +724,14 @@
     </div>
     {{/hasnavigation}}
 
-    {{! Add section }}
+    {{! Add section (hidden on single section pages, matching core behaviour) }}
+    {{^singlesection}}
     {{#numsections}}
         {{$ core_courseformat/local/content/addsection }}
             {{> core_courseformat/local/content/addsection }}
         {{/ core_courseformat/local/content/addsection }}
     {{/numsections}}
+    {{/singlesection}}
 
     {{! Bulk edit tools }}
     {{#bulkedittools}}
@@ -738,9 +740,18 @@
         {{/ core_courseformat/local/content/bulkedittools}}
     {{/bulkedittools}}
 </div>
-{{! Initialize Moodle reactive course editor in editing mode or single section pages.
-    NOT in view mode main page - our letstudy.js handles tabs/cards/list/timeline
-    and the reactive component's Bootstrap Collapse would conflict with our custom layouts. }}
+{{! Initialize Moodle reactive course editor.
+    On section.php (hasnavigation): always init for editing support.
+    On main page: only in editing mode - in view mode our letstudy.js handles
+    custom layouts and the reactive component would conflict. }}
+{{#hasnavigation}}
+{{#js}}
+require(['core_courseformat/local/content'], function(component) {
+    component.init('#page', {}, {{sectionreturn}}, {{#pagesectionid}}{{.}}{{/pagesectionid}}{{^pagesectionid}}null{{/pagesectionid}});
+});
+{{/js}}
+{{/hasnavigation}}
+{{^hasnavigation}}
 {{#isediting}}
 {{#js}}
 require(['core_courseformat/local/content'], function(component) {
@@ -748,10 +759,4 @@ require(['core_courseformat/local/content'], function(component) {
 });
 {{/js}}
 {{/isediting}}
-{{#hasnavigation}}
-{{#js}}
-require(['core_courseformat/local/content'], function(component) {
-    component.init('#page', {}, {{sectionreturn}}, {{#pagesectionid}}{{.}}{{/pagesectionid}}{{^pagesectionid}}null{{/pagesectionid}});
-});
-{{/js}}
 {{/hasnavigation}}

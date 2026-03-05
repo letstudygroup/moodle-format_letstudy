@@ -15,10 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Contains the core course state actions specific to LetStudy format.
+ * Contains the core course state actions specific to Letstudy format.
  *
  * @package    format_letstudy
- * @copyright  2026 LetStudy Group
+ * @copyright  2026 Letstudy Group
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -30,14 +30,13 @@ use stdClass;
 use context_course;
 
 /**
- * Course state actions for LetStudy format.
+ * Course state actions for Letstudy format.
  *
  * @package    format_letstudy
- * @copyright  2026 LetStudy Group
+ * @copyright  2026 Letstudy Group
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class stateactions extends stateactions_base {
-
     /**
      * Highlight course section.
      *

@@ -15,18 +15,18 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version details for the LetStudy course format.
+ * Version details for the Letstudy course format.
  *
  * @package    format_letstudy
- * @copyright  2026 LetStudy Group
+ * @copyright  2026 Letstudy Group
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2026022114;
+$plugin->version   = 2026030500;
 $plugin->requires  = 2024100700;
 $plugin->supported = [405, 500];
 $plugin->component = 'format_letstudy';
 $plugin->maturity  = MATURITY_STABLE;
-$plugin->release   = '2.1.1';
+$plugin->release   = '2.1.2';
